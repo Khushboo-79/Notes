@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_database/data/db_helper.dart';
+import 'package:flutter_database/db_provider.dart';
 import 'package:flutter_database/home_page.dart';
+import 'package:flutter_database/theme_provider.dart';
+import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => dbProvider(dBHelper: dbHelper.getInstance)),
+        ChangeNotifierProvider(create: (context) => themeProvider())
+      ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -18,6 +28,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "notes",
+      themeMode: context.watch<themeProvider>().getThemeValue()
+          ? ThemeMode.dark : ThemeMode.light,
+      darkTheme: ThemeData.dark(),
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
@@ -40,10 +53,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      //   title: Text(widget.title),
+      // ),
       body: homePage()
     );
   }
